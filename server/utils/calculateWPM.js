@@ -23,7 +23,7 @@ export const calculateWPM = (rawText, prompt) => {
 
   const rawWpm = typedChar / 5 / totalTime;
   const wpm = correctChars / 5 / totalTime;
-  const accuracy = typedChar === 0 ? 0 : (correctChars / typedChard) * 100;
+  const accuracy = typedChar === 0 ? 0 : (correctChars / typedChar) * 100;
   return {
     rawWpm,
     wpm,

@@ -1,0 +1,9 @@
+import express from "express";
+
+const router = express.Router();
+
+import { getPrompt } from "../controllers/typingController.js";
+
+router.get("/typing/prompt", getPrompt);
+
+export default router;

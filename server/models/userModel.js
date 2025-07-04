@@ -19,7 +19,9 @@ const userSchema = new mongoose.Schema(
     password: { type: String, required: true },
 
     categoryStats: {
-      classic: { type: categoryStatsSchema, default: () => ({}) },
+      count50: { type: categoryStatsSchema, default: () => ({}) },
+      count100: { type: categoryStatsSchema, default: () => ({}) },
+      count200: { type: categoryStatsSchema, default: () => ({}) },
       time15: { type: categoryStatsSchema, default: () => ({}) },
       time30: { type: categoryStatsSchema, default: () => ({}) },
       time60: { type: categoryStatsSchema, default: () => ({}) },
