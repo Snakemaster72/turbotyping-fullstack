@@ -8,6 +8,8 @@ import userRoutes from "./routes/userRoutes.js";
 import testLogicRoutes from "./routes/testLogicRoutes.js";
 import dotenv from "dotenv";
 import { optionalAuth } from "./middleware/optionalAuthMiddleware.js";
+import logger from "./middleware/logger.js";
+import errorHandler from "./middleware/errorHandler.js";
 
 dotenv.config();
 app.use(cors());
@@ -23,7 +25,9 @@ app.use("/api/users/", userRoutes);
 app.use("/api/typing", testLogicRoutes);
 
 //Error Handling
+app.use(errorHandler);
 app.use(optionalAuth);
+app.use(logger);
 
 connectDB();
 

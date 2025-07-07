@@ -8,11 +8,12 @@ import { User } from "../models/userModel.js";
 //Public
 
 export const registerUser = asyncHandler(async (req, res) => {
+  console.log(req.body);
   const { username, email, password } = req.body;
 
   //check for any incomplete credentials
   if (!email || !username || !password) {
-    req.status(400);
+    res.status(400);
     throw new Error("Please add all fields");
   }
   // check if that username is already occupied

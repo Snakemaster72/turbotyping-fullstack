@@ -6,12 +6,11 @@ import { word } from "../utils/wordData.js";
 // POST /api/test
 // PUBLIC
 export const typingController = asyncHandler(async (req, res) => {
-  const { testData, prompt } = req.body;
+  const { testType, testData, prompt } = req.body;
   if (!testData && !prompt) {
     res.status(400);
     throw new Error("Invalid request");
   }
-  const { testType } = testData;
   const { rawWpm, wpm, accuracy, totalTime, typedChar } = calculateWPM(
     testData,
     prompt,
