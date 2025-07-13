@@ -1,13 +1,19 @@
 import { useEffect, useRef, useState } from "react";
 
-const PromptDisplay = ({ prompt, typedText }) => {
+const PromptDisplay = ({ prompt, typedText, startTime, mode }) => {
   const containerRef = useRef(null);
   const spanRefs = useRef([]);
   const [offset, setOffset] = useState(0);
+  const prevModeRef = useRef(mode);
 
   const text = prompt;
 
   useEffect(() => {
+    if (prevModeRef.current !== mode) {
+      setOffset(0);
+    }
+    prevModeRef.current = mode;
+
     const container = containerRef.current;
     const caretSpan = spanRefs.current[typedText.length];
 
@@ -27,7 +33,7 @@ const PromptDisplay = ({ prompt, typedText }) => {
   return (
     <div
       ref={containerRef}
-      className="relative overflow-hidden border p-4 rounded bg-white shadow-inner h-[100px] w-full max-w-7xl"
+      className="relative overflow-hidden border p-4 rounded bg-white shadow-inner h-[100px]  w-7xl"
     >
       <div
         className="whitespace-nowrap font-mono text-xl transition-transform duration-100 ease-out"

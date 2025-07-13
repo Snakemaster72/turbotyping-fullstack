@@ -11,19 +11,22 @@ export const calculateWPM = (rawText, prompt) => {
   let inputText = "";
   for (let i of rawText) {
     if (i.type === "insert") inputText += i.char;
-    else if (i.type === "delete") inputText = inputText.slice(0, -1);
+    else if (i.type === "delete") inputText = inputText.slice(0, i.diff);
   }
+  console.log(inputText);
   const typedChar = inputText.length;
   let correctChars = 0;
   for (let i = 0; i < Math.min(inputText.length, prompt.length); i++) {
     if (prompt[i] === inputText[i]) correctChars++;
   }
   const totalTime = rawText[rawText.length - 1].time;
-  const durationMinutes = totalTime / 60000;
+  const durationMinutes = totalTime / 60;
 
-  const rawWpm = typedChar / 5 / totalTime;
-  const wpm = correctChars / 5 / totalTime;
-  const accuracy = typedChar === 0 ? 0 : (correctChars / typedChar) * 100;
+  const rawWpm = Math.ceil(typedChar / 5 / durationMinutes);
+  const wpm = Math.ceil(correctChars / 5 / durationMinutes);
+  const accuracy = Math.floor(
+    typedChar === 0 ? 0 : (correctChars / typedChar) * 100,
+  );
   return {
     rawWpm,
     wpm,

@@ -9,9 +9,9 @@ const ModeSelection = ({ onSelect }) => {
     { label: "30", group: "timer", value: "timer_30" },
     { label: "60", group: "timer", value: "timer_60" },
     { label: "Count", group: "count", value: null, isHeader: true },
+    { label: "10", group: "count", value: "count_10" },
+    { label: "20", group: "count", value: "count_20" },
     { label: "50", group: "count", value: "count_50" },
-    { label: "100", group: "count", value: "count_100" },
-    { label: "200", group: "count", value: "count_200" },
   ];
 
   const selectedGroup = selectedValue.split("_")[0];

@@ -7,7 +7,7 @@ import { word } from "../utils/wordData.js";
 // PUBLIC
 export const typingController = asyncHandler(async (req, res) => {
   const { testType, testData, prompt } = req.body;
-  if (!testData && !prompt) {
+  if (!testData || !prompt) {
     res.status(400);
     throw new Error("Invalid request");
   }

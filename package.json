@@ -1,0 +1,23 @@
+{
+  "name": "rapidtyping-fullstack",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "server": "nodemon --env-file=server/.env server/server.js",
+    "client": "cd client && npm run dev",
+    "dev": "concurrently \"npm run server\" \"npm run client\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Snakemaster72/turbotyping-fullstack.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Snakemaster72/turbotyping-fullstack/issues"
+  },
+  "homepage": "https://github.com/Snakemaster72/turbotyping-fullstack#readme",
+  "description": ""
+}
