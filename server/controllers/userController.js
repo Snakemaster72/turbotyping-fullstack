@@ -87,7 +87,13 @@ export const loginUser = asyncHandler(async (req, res) => {
 // GET /api/users/me
 // Private
 export const getMe = asyncHandler(async (req, res) => {
-  res.status(200).json(req.user);
+  const user = await User.findById(req.user.id).select("-password"); // Find user by ID, exclude password
+  if (user) {
+    res.status(200).json(user);
+  } else {
+    res.status(404);
+    throw new Error("User not found");
+  }
 });
 
 //Generate token

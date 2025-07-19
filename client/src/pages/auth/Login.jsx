@@ -28,8 +28,10 @@ const Login = () => {
     if (isSuccess || user) {
       navigate("/");
     }
-    dispatch(reset());
-  }, [user, isError, isSuccess, isLoading, message, navigate, dispatch]);
+    return () => {
+      dispatch(reset());
+    };
+  }, [user, isError, isSuccess, message, navigate, dispatch]);
 
   const onChange = (e) => {
     setFormData((prevState) => ({
@@ -51,15 +53,22 @@ const Login = () => {
     <div className="mt-20 flex flex-col items-center justify-center px-4">
       <h1 className="text-4xl font-bold mb-9">Login to Turbotyping</h1>
       <form className="flex flex-col gap-4 w-80" onSubmit={onSubmit}>
+        // src/pages/auth/Login.jsx // ...inside the return statement
         <input
           type="email"
           placeholder="Email"
           className="border p-2 rounded"
+          name="email" // <-- Add this
+          value={email} // <-- Add this
+          onChange={onChange} // <-- Add this
         />
         <input
           type="password"
           placeholder="Password"
           className="border p-2 rounded"
+          name="password" // <-- Add this
+          value={password} // <-- Add this
+          onChange={onChange} // <-- Add this
         />
         <button type="submit" className="border p-2 rounded">
           Login
