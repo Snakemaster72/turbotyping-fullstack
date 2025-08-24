@@ -32,7 +32,12 @@ export const handleRoomEvents = (socket, io) => {
   };
 
   // Set up the listener for creating a room
-  socket.on("create_room", createRoom);
+  socket.on("create_room", (data) => {
+    console.log("Debug: create_room event received");
+    // if correct data is received, log it and create
+    console.log("Creating room with data:", data);
+    createRoom(data);
+});
 
   // This listener is now correctly set up only once per connection
   socket.on("player_joined_debug", (data) => {
