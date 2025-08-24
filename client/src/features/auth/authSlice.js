@@ -13,6 +13,25 @@ const initialState = {
   message: "",
 };
 
+// Thunk to get user data
+export const getUserData = createAsyncThunk(
+  'auth/getUserData',
+  async(_, thunkAPI) => {
+    try {
+      const token = thunkAPI.getState().auth.user?.token || localStorage.getItem("token");
+      if(!token) {
+        return thunkAPI.rejectWithValue("No token found");
+      }
+      return await authService.getMe();   
+    } catch (error) {
+      const message =
+        (error.response && error.response.data && error.data.message) ||
+        error.message ||
+        error.toString();
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+)
 //Register User
 //
 export const register = createAsyncThunk(
@@ -63,6 +82,26 @@ export const authSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
+
+    // Handle get user data
+    .addCase(getUserData.pending, (state) => {
+      state.isLoading = true;
+    })
+    .addCase(getUserData.fulfilled, (state, action) => {
+      state.isLoading = false;
+      state.isSuccess = true;
+      // Payload is the user data
+      state.user = { ...action.payload, token: localStorage.getItem("token") };
+    })
+    .addCase(getUserData.rejected, (state, action) => {
+      state.isLoading = false;
+      state.isError = true;
+      state.message = action.payload;
+      state.user = null;
+
+      // remove invalid token from localStorage
+      localStorage.removeItem("token");
+    })
       .addCase(register.pending, (state) => {
         state.isLoading = true;
       })

@@ -7,15 +7,38 @@ import PlayingMenu from "./pages/PlayMenu.jsx";
 import Login from "./pages/auth/Login.jsx";
 import Register from "./pages/auth/Register.jsx";
 import SinglePlayer from "./pages/play/SingPlayer.jsx";
-import MultiplayerPage from "./pages/play/MultiplayerPage.jsx";
 import RoomChoice from "./pages/play/Multiplayer/RoomChoice";
 import CreateRoom from "./pages/play/Multiplayer/CreateRoom";
 import JoinRoom from "./pages/play/Multiplayer/JoinRoom";
 import WaitingRoom from "./pages/play/Multiplayer/WaitingRoom";
 import GameRoom from "./pages/play/Multiplayer/GameRoom";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { getUserData, reset } from "./features/auth/authSlice";
 
 function App() {
+
+  const dispatch = useDispatch();
+  const { user } = useSelector((state) => state.auth);
+
+  useEffect(() => {
+    // check for a token in localStorage
+    const token = localStorage.getItem("token");
+    if (token && !user) {
+      // if a token exists and user data is not loaded, fetch user data
+      dispatch(getUserData())
+        .unwrap()
+        .catch((error) => {
+          console.error("Failed to fetch user data:", error);
+        });
+    }
+    return () => {
+      // cleanup if necessary
+      dispatch(reset());
+    };
+  }, [dispatch, user]);
+
   return (
     <>
       <Router>
@@ -32,7 +55,7 @@ function App() {
             <Route path="create" element={<CreateRoom />} />
             <Route path="join" element={<JoinRoom />} />
             <Route path="waiting/:roomId" element={<WaitingRoom />} />
-            <Route path="play/:roomId" element={<GameRoom />} />
+            <Route path="room/:roomId" element={<GameRoom />} />
           </Route>
         </Routes>
       </Router>

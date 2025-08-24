@@ -1,21 +1,22 @@
 import { useState, useEffect } from "react";
 import { getUsername } from "../../../utils/getUsername";
-import useMultiplayerSocket from "../../../socket/useMultiplayerSocket";
 import { useNavigate } from "react-router-dom";
+import { socket, createRoom } from "../../../socket/socket";
 
 const CreateRoom = () => {
+  const navigate = useNavigate();
   const [username, setUsername] = useState({});
   const [maxPlayer, setMaxPlayer] = useState(2);
   const [count, setCount] = useState(50);
-  const { createRoom } = useMultiplayerSocket();
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // 1. Define an async function inside the effect
+   
+    if(!socket.connected) socket.connect();
+
     const fetchUsername = async () => {
       try {
         const usernameData = await getUsername();
-        //console.log(usernameData);
         setUsername(usernameData.username);
       } catch (error) {
         console.log(error);
@@ -24,10 +25,18 @@ const CreateRoom = () => {
         setIsLoading(false);
       }
     };
-
-    // 2. Call the async function
     fetchUsername();
-  }, []); // The empty dependency array is correct to run this once on mount
+
+    socket.on("player_joined", (data) => {
+      console.log("Room created! Room info:", data);
+      // if anybody has joined the room, we can redirect them to the room page
+       navigate(`/play/multiplayer/room/${data.roomId}`);
+    });
+    // Cleanup listener on unmount
+    return () => {
+      socket.off("player_joined");
+    };
+  }, []);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -38,7 +47,10 @@ const CreateRoom = () => {
       maxPlayer,
       count,
     };
-    createRoom(roomdData);
+    createRoom(roomData);
+    // delete later
+    console.log("Room created with data:", roomData);
+
   };
 
   const renderUserStatus = () => {

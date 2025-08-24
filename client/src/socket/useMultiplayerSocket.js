@@ -41,26 +41,6 @@ const useMultiplayerSocket = () => {
       socket.off(SOCKET_EVENTS.GAME_STATUS, onGameStatus);
     };
   }, [dispatch]);
-
-  // --- Emitter Functions ---
-  const joinRoom = useCallback((data) => {
-    socket.emit(SOCKET_EVENTS.JOIN_ROOM, data); // { roomId, username }
-  }, []);
-
-  const createRoom = useCallback(() => {
-    socket.emit(SOCKET_EVENTS.CREATE_ROOM);
-  }, []);
-
-  const startGame = useCallback((roomId) => {
-    socket.emit(SOCKET_EVENTS.START_GAME, roomId);
-  }, []);
-
-  const sendProgress = useCallback((data) => {
-    socket.emit(SOCKET_EVENTS.SEND_PROGRESS, data); // { roomId, progress }
-  }, []);
-
-  // Return the functions so components can use them
-  return { joinRoom, startGame, sendProgress };
 };
 
 export default useMultiplayerSocket;
