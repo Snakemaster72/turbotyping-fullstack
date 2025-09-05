@@ -35,7 +35,7 @@ const login = async (userData) => {
 
 //logout
 const logout = () => {
-  localStorage.removeItem("user");
+  localStorage.removeItem("token");
 };
 
 const authService = {

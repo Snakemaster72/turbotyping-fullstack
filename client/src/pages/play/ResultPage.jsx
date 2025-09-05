@@ -1,67 +1,70 @@
+import { HiArrowRight } from "react-icons/hi";
+
 const ResultPage = ({ testFinished, resetTest, resultData }) => {
   const { rawWpm, wpm, accuracy, totalTime, typedChar } = resultData;
+  
   return (
     <>
       {/* Dark blurry background */}
-      <div className="fixed inset-0 bg-black/40 backdrop-blur-sm z-40"></div>
+      <div className="fixed inset-0 bg-[#1d2021]/90 backdrop-blur-md z-40"></div>
 
       {/* Modal container */}
-      <div className="fixed inset-0 flex flex-col items-center justify-center z-50 ">
-        <div className="bg-white p-6 rounded-xl shadow-xl w-[90%] max-w-7xl flex flex-col justify-between">
+      <div className="fixed inset-0 flex flex-col items-center justify-center z-50 p-4" style={{ fontFamily: 'JetBrains Mono, monospace' }}>
+        <div className="bg-[#282828] p-8 rounded-lg border-2 border-[#504945] w-[90%] max-w-4xl">
           {/* Header */}
-          <h2 className="text-2xl font-bold mb-4 ">Typing Test Result</h2>
+          <h2 className="text-4xl font-bold mb-8 text-[#fe8019]">
+            Test Complete!
+          </h2>
 
-          <div className="flex flex-row mt-5 justify-between">
-            {/* Stats Section */}
-            <div className="flex flex-col gap-4 text-center ml-20 mb-6">
-              <div>
-                <h3 className="text-lg font-semibold text-gray-700">WPM</h3>
-                <p className="text-2xl font-bold text-blue-600">{wpm}</p>
+          {/* Main Stats Grid */}
+          <div className="grid grid-cols-2 gap-8 mb-12">
+            {/* Primary Stats */}
+            <div className="space-y-8">
+              <div className="text-center p-6 bg-[#1d2021] rounded-lg border-2 border-[#504945]">
+                <h3 className="text-xl font-semibold text-[#ebdbb2] mb-2">WPM</h3>
+                <p className="text-5xl font-bold text-[#b8bb26]">
+                  {wpm}
+                </p>
               </div>
-              <div>
-                <h3 className="text-lg font-semibold text-gray-700">Raw WPM</h3>
-                <p className="text-2xl font-bold text-blue-600">{rawWpm}</p>
+              <div className="text-center p-6 bg-[#1d2021] rounded-lg border-2 border-[#504945]">
+                <h3 className="text-xl font-semibold text-[#ebdbb2] mb-2">Accuracy</h3>
+                <p className="text-5xl font-bold text-[#8ec07c]">
+                  {accuracy}%
+                </p>
               </div>
             </div>
 
-            {/* Graph Section */}
-            <div className="bg-gray-100 rounded-lg p-4 h-60 mr-20 mb-6">
-              <h4 className="text-center text-gray-600 mb-2">
-                Performance Over Time
-              </h4>
-              {/* Replace this with your actual chart (e.g. Recharts, Chart.js, etc.) */}
-              <div className="w-full h-full flex items-center justify-center text-gray-400 italic">
-                [Graph Placeholder]
+            {/* Secondary Stats */}
+            <div className="grid grid-cols-1 gap-4">
+              <div className="p-6 bg-[#1d2021] rounded-lg border-2 border-[#504945]">
+                <h3 className="text-lg font-semibold text-[#ebdbb2] mb-1">Raw WPM</h3>
+                <p className="text-3xl font-bold text-[#fabd2f]">{rawWpm}</p>
+              </div>
+              <div className="p-6 bg-[#1d2021] rounded-lg border-2 border-[#504945]">
+                <h3 className="text-lg font-semibold text-[#ebdbb2] mb-1">Time</h3>
+                <p className="text-3xl font-bold text-[#83a598]">{totalTime}s</p>
+              </div>
+              <div className="p-6 bg-[#1d2021] rounded-lg border-2 border-[#504945]">
+                <h3 className="text-lg font-semibold text-[#ebdbb2] mb-1">Characters</h3>
+                <p className="text-3xl font-bold text-[#d3869b]">{typedChar}</p>
               </div>
             </div>
           </div>
 
-          <div className="flex flex-row justify-around mb-10">
-            <div>
-              <h3 className="text-lg font-semibold text-gray-700">Accuracy</h3>
-              <p className="text-2xl font-bold text-green-600">{accuracy}%</p>
-            </div>
-            <div>
-              <h3 className="text-lg font-semibold text-gray-700">Time</h3>
-              <p className="text-2xl font-bold text-purple-600">
-                {totalTime} s
-              </p>
-            </div>
-            <div>
-              <h3 className="text-lg font-semibold text-gray-700">
-                Total Chars
-              </h3>
-              <p className="text-2xl font-bold text-orange-600">{typedChar}</p>
-            </div>
-          </div>
-
-          {/* Footer Button */}
-          <div className="flex justify-center">
+          {/* Footer Buttons */}
+          <div className="flex justify-center gap-4">
             <button
               onClick={() => resetTest()}
-              className="px-6 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
+              className="px-8 py-4 text-xl font-bold bg-[#504945] text-[#ebdbb2] rounded-lg hover:bg-[#665c54] transition-colors"
             >
-              Close
+              Try Again
+            </button>
+            <button
+              onClick={() => resetTest(true)}
+              className="px-8 py-4 text-xl font-bold bg-[#504945] text-[#ebdbb2] rounded-lg hover:bg-[#665c54] transition-colors flex items-center gap-2"
+            >
+              Next Test
+              <HiArrowRight className="w-6 h-6" />
             </button>
           </div>
         </div>

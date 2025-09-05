@@ -103,7 +103,7 @@ const CreateRoom = () => {
             onChange={(e) => setCount(parseInt(e.target.value))}
             className="w-full border border-gray-300 rounded px-3 py-2"
           >
-            {[50, 100, 150, 200].map((num) => (
+            {[15, 30, 60].map((num) => (
               <option key={num} value={num}>
                 {num}
               </option>

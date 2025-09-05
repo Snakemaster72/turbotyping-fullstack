@@ -20,34 +20,46 @@ const PromptDisplay = ({ prompt, typedText, startTime, mode }) => {
     if (container && caretSpan) {
       const caretX = caretSpan.offsetLeft;
       const caretRight = caretX + caretSpan.offsetWidth;
-
       const containerWidth = container.offsetWidth;
 
-      // Scroll left when caret exceeds 60% of container width
       if (caretRight - offset > containerWidth * 0.6) {
         setOffset(caretRight - containerWidth * 0.6);
       }
     }
   }, [typedText]);
 
+  if (!text) {
+    return (
+      <div className="relative overflow-hidden mb-6 bg-[#282828] rounded-lg border border-[#504945] p-6">
+        <div className="text-[#928374] text-2xl">Loading prompt...</div>
+      </div>
+    );
+  }
+
   return (
     <div
       ref={containerRef}
-      className="relative overflow-hidden border p-4 rounded bg-white shadow-inner h-[100px]  w-7xl"
+      className="relative overflow-hidden mb-6 bg-[#282828] rounded-lg border border-[#504945]"
     >
       <div
-        className="whitespace-nowrap font-mono text-xl transition-transform duration-100 ease-out"
-        style={{ transform: `translateX(-${offset}px)` }}
+        className="whitespace-pre font-mono text-2xl p-6 transition-transform duration-100 ease-out"
+        style={{
+          transform: `translateX(-${offset}px)`,
+          fontFamily: "JetBrains Mono, monospace",
+        }}
       >
         {text.split("").map((char, idx) => {
           let style = "";
 
           if (idx < typedText.length) {
-            style = typedText[idx] === char ? "text-green-600" : "text-red-600";
+            style =
+              typedText[idx] === char
+                ? "text-[#b8bb26]" // Gruvbox green for correct
+                : "text-[#fb4934]"; // Gruvbox red for wrong
           } else if (idx === typedText.length) {
-            style = "bg-yellow-300"; // current character
+            style = "bg-[#504945] text-[#ebdbb2]"; // Gruvbox cursor
           } else {
-            style = "text-gray-400";
+            style = "text-[#ebdbb2]"; // Gruvbox light text for untyped
           }
 
           return (

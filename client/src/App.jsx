@@ -16,17 +16,15 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getUserData, reset } from "./features/auth/authSlice";
+import { ThemeProvider } from "./context/ThemeContext";
 
 function App() {
-
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.auth);
 
   useEffect(() => {
-    // check for a token in localStorage
     const token = localStorage.getItem("token");
     if (token && !user) {
-      // if a token exists and user data is not loaded, fetch user data
       dispatch(getUserData())
         .unwrap()
         .catch((error) => {
@@ -34,32 +32,33 @@ function App() {
         });
     }
     return () => {
-      // cleanup if necessary
       dispatch(reset());
     };
   }, [dispatch, user]);
 
   return (
-    <>
+    <ThemeProvider>
       <Router>
-        <Header />
-        <ToastContainer />
-        <Routes>
-          <Route path="/" element={<LandingPage />} />
-          <Route path="/play" element={<PlayingMenu />} />
-          <Route path="/auth/login" element={<Login />} />
-          <Route path="/auth/register" element={<Register />} />
-          <Route path="/play/singleplayer" element={<SinglePlayer />} />
-          <Route path="/play/multiplayer/">
-            <Route index element={<RoomChoice />} />
-            <Route path="create" element={<CreateRoom />} />
-            <Route path="join" element={<JoinRoom />} />
-            <Route path="waiting/:roomId" element={<WaitingRoom />} />
-            <Route path="room/:roomId" element={<GameRoom />} />
-          </Route>
-        </Routes>
+        <div className="min-h-screen font-jetbrains">
+          <Header />
+          <ToastContainer theme="dark" />
+          <Routes>
+            <Route path="/" element={<LandingPage />} />
+            <Route path="/play" element={<PlayingMenu />} />
+            <Route path="/auth/login" element={<Login />} />
+            <Route path="/auth/register" element={<Register />} />
+            <Route path="/play/singleplayer" element={<SinglePlayer />} />
+            <Route path="/play/multiplayer/">
+              <Route index element={<RoomChoice />} />
+              <Route path="create" element={<CreateRoom />} />
+              <Route path="join" element={<JoinRoom />} />
+              <Route path="waiting/:roomId" element={<WaitingRoom />} />
+              <Route path="room/:roomId" element={<GameRoom />} />
+            </Route>
+          </Routes>
+        </div>
       </Router>
-    </>
+    </ThemeProvider>
   );
 }
 

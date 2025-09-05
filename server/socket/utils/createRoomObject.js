@@ -3,7 +3,7 @@ export function createRoomObject({
   socketId,
   username,
   prompt,
-  maxPlayers,
+  maxPlayer,
 }) {
   return {
     roomId,
@@ -16,7 +16,7 @@ export function createRoomObject({
       },
     ],
     prompt,
-    maxPlayers,
+    maxPlayer,
     status: "waiting",
     createdAt: Date.now(),
   };

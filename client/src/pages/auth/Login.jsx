@@ -5,8 +5,11 @@ import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { reset, login } from "../../features/auth/authSlice";
+import { useTheme } from "../../context/ThemeContext";
+import { FiMail, FiLock } from "react-icons/fi";
 
 const Login = () => {
+  const { theme } = useTheme();
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -39,47 +42,110 @@ const Login = () => {
       [e.target.name]: e.target.value,
     }));
   };
+
   const onSubmit = (e) => {
     e.preventDefault();
-
     const userData = {
       email,
       password,
     };
-
     dispatch(login(userData));
   };
+
   return (
-    <div className="mt-20 flex flex-col items-center justify-center px-4">
-      <h1 className="text-4xl font-bold mb-9">Login to Turbotyping</h1>
-      <form className="flex flex-col gap-4 w-80" onSubmit={onSubmit}>
-        // src/pages/auth/Login.jsx // ...inside the return statement
-        <input
-          type="email"
-          placeholder="Email"
-          className="border p-2 rounded"
-          name="email" // <-- Add this
-          value={email} // <-- Add this
-          onChange={onChange} // <-- Add this
-        />
-        <input
-          type="password"
-          placeholder="Password"
-          className="border p-2 rounded"
-          name="password" // <-- Add this
-          value={password} // <-- Add this
-          onChange={onChange} // <-- Add this
-        />
-        <button type="submit" className="border p-2 rounded">
-          Login
-        </button>
-      </form>
-      <p className="mt-4 text-sm">
-        Don’t have an account?{" "}
-        <Link to="/auth/register" className="underline">
-          Sign up
-        </Link>
-      </p>
+    <div 
+      className="min-h-screen flex flex-col items-center justify-center px-4 font-jetbrains"
+      style={{ 
+        backgroundColor: theme.bg,
+        color: theme.text
+      }}
+    >
+      <div 
+        className="w-full max-w-md p-8 rounded-lg border-2"
+        style={{
+          backgroundColor: theme.bgDark,
+          borderColor: theme.border
+        }}
+      >
+        <h1 
+          className="text-4xl font-bold mb-8 text-center"
+          style={{ color: theme.primary }}
+        >
+          Login to Turbotyping
+        </h1>
+        
+        <form className="flex flex-col gap-6" onSubmit={onSubmit}>
+          <div className="relative">
+            <div 
+              className="absolute left-3 top-1/2 -translate-y-1/2"
+              style={{ color: theme.textSoft }}
+            >
+              <FiMail size={20} />
+            </div>
+            <input
+              type="email"
+              placeholder="Email"
+              name="email"
+              value={email}
+              onChange={onChange}
+              className="w-full py-3 px-11 rounded-lg border-2 outline-none transition-colors"
+              style={{ 
+                backgroundColor: theme.bg,
+                borderColor: theme.border,
+                color: theme.text
+              }}
+            />
+          </div>
+
+          <div className="relative">
+            <div 
+              className="absolute left-3 top-1/2 -translate-y-1/2"
+              style={{ color: theme.textSoft }}
+            >
+              <FiLock size={20} />
+            </div>
+            <input
+              type="password"
+              placeholder="Password"
+              name="password"
+              value={password}
+              onChange={onChange}
+              className="w-full py-3 px-11 rounded-lg border-2 outline-none transition-colors"
+              style={{ 
+                backgroundColor: theme.bg,
+                borderColor: theme.border,
+                color: theme.text
+              }}
+            />
+          </div>
+
+          <button 
+            type="submit" 
+            className="py-3 px-6 rounded-lg font-bold text-lg transition-colors mt-4"
+            style={{ 
+              backgroundColor: theme.primary,
+              color: theme.bg
+            }}
+            disabled={isLoading}
+          >
+            {isLoading ? 'Logging in...' : 'Login'}
+          </button>
+        </form>
+
+        <p 
+          className="mt-6 text-center"
+          style={{ color: theme.textSoft }}
+        >
+          Don't have an account?{" "}
+          <Link 
+            to="/auth/register" 
+            className="font-medium hover:opacity-90 transition-colors"
+            style={{ color: theme.primary }}
+          >
+            Sign up
+          </Link>
+        </p>
+      </div>
     </div>
   );
 };

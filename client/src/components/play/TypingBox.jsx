@@ -91,14 +91,17 @@ const TypingBox = ({
   };
 
   return (
-    <div className="mt-6 h-min">
+    <div className="relative w-full">
       <textarea
         ref={inputRef}
         value={currentWord}
         onChange={handleChange}
-        placeholder={startTime ? "" : "Start Typing here..."}
-        className="w-full border border-gray-300 rounded p-3 text-lg focus:outline-none"
-        rows={1}
+        placeholder={startTime ? "" : "Click here and start typing..."}
+        className="w-full p-6 text-2xl bg-[#1d2021] text-[#ebdbb2] rounded-lg border-2 border-[#504945] focus:border-[#fe8019] focus:outline-none transition-colors resize-none placeholder-[#928374]"
+        style={{ 
+          fontFamily: 'JetBrains Mono, monospace',
+          minHeight: '120px',
+        }}
       />
     </div>
   );

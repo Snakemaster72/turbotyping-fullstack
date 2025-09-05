@@ -17,11 +17,24 @@ const ModeSelection = ({ onSelect }) => {
   const selectedGroup = selectedValue.split("_")[0];
 
   return (
-    <div className="flex flex-row rounded-t-2xl border border-black w-min mt-10">
+    <div className="flex flex-wrap gap-2">
       {options.map((opt, i) => {
         const isActive = opt.isHeader
           ? opt.group === selectedGroup
           : opt.value === selectedValue;
+
+        if (opt.isHeader) {
+          return (
+            <span
+              key={i}
+              className={`text-xl font-bold mr-2 ${
+                isActive ? "text-[#fe8019]" : "text-[#928374]"
+              }`}
+            >
+              {opt.label}
+            </span>
+          );
+        }
 
         return (
           <button
@@ -29,11 +42,16 @@ const ModeSelection = ({ onSelect }) => {
             onClick={() => {
               if (opt.value) {
                 setSelectedValue(opt.value);
-                onSelect(opt.value); // notify parent
+                onSelect(opt.value);
               }
             }}
-            className={`text-2xl p-2 border-r border-black hover:bg-yellow-50 ${isActive ? "bg-yellow-100" : ""
-              }`}
+            className={`
+              px-4 py-2 text-lg font-medium rounded-lg transition-colors
+              ${isActive 
+                ? "bg-[#504945] text-[#ebdbb2]" 
+                : "text-[#a89984] hover:bg-[#3c3836]"
+              }
+            `}
           >
             {opt.label}
           </button>
