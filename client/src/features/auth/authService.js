@@ -38,11 +38,21 @@ const logout = () => {
   localStorage.removeItem("token");
 };
 
+// Set token for authenticated requests
+const setToken = (token) => {
+  if (token) {
+    axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+  } else {
+    delete axios.defaults.headers.common["Authorization"];
+  }
+};
+
 const authService = {
   register,
   login,
   logout,
-  getMe
+  getMe,
+  setToken,
 };
 
 export default authService;

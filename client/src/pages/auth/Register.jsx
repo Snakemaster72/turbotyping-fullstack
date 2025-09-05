@@ -45,7 +45,7 @@ const Register = () => {
     }));
   };
 
-  const onSubmit = (e) => {
+  const onSubmit = async (e) => {
     e.preventDefault();
 
     if (password !== password2) {
@@ -56,8 +56,19 @@ const Register = () => {
         email,
         password,
       };
-      console.log("Registering user with data:", userData); // ✅ ADD THIS
-      dispatch(register(userData));
+      
+      try {
+        const result = await dispatch(register(userData)).unwrap();
+        toast.success(result.message);
+        setFormData({
+          username: '',
+          email: '',
+          password: '',
+          password2: ''
+        });
+      } catch (error) {
+        toast.error(error || 'Registration failed');
+      }
     }
   };
 

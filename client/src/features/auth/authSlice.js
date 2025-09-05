@@ -13,19 +13,40 @@ const initialState = {
   message: "",
 };
 
+// Auto-login thunk
+export const getAuthenticatedUser = createAsyncThunk(
+  'auth/getAuthenticatedUser',
+  async (_, thunkAPI) => {
+    try {
+      const token = thunkAPI.getState().auth.user?.token;
+      if (!token) return thunkAPI.rejectWithValue('No token found');
+      
+      return await authService.getMe();
+    } catch (error) {
+      const message = error.response?.data?.message || error.message;
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
+
 // Thunk to get user data
 export const getUserData = createAsyncThunk(
   'auth/getUserData',
   async(_, thunkAPI) => {
     try {
-      const token = thunkAPI.getState().auth.user?.token || localStorage.getItem("token");
+      const token = localStorage.getItem("token");
       if(!token) {
         return thunkAPI.rejectWithValue("No token found");
       }
-      return await authService.getMe();   
+      // Set the token in the auth service before making the request
+      authService.setToken(token);
+      const userData = await authService.getMe();
+      // Store user data with token in localStorage
+      localStorage.setItem('user', JSON.stringify({ ...userData, token }));
+      return userData;
     } catch (error) {
       const message =
-        (error.response && error.response.data && error.data.message) ||
+        (error.response?.data?.message) ||
         error.message ||
         error.toString();
       return thunkAPI.rejectWithValue(message);
