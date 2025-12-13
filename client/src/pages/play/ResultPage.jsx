@@ -1,7 +1,10 @@
 import { HiArrowRight } from "react-icons/hi";
+import { Link } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 const ResultPage = ({ testFinished, resetTest, resultData }) => {
   const { rawWpm, wpm, accuracy, totalTime, typedChar } = resultData;
+  const { user } = useSelector(state => state.auth);
   
   return (
     <>
@@ -26,6 +29,17 @@ const ResultPage = ({ testFinished, resetTest, resultData }) => {
                   {wpm}
                 </p>
               </div>
+              {!user && (
+                <div className="text-center p-6 bg-[#1d2021] rounded-lg border-2 border-[#504945]">
+                  <h3 className="text-xl font-semibold text-[#ebdbb2] mb-4">Want to save your results?</h3>
+                  <Link 
+                    to="/auth/login"
+                    className="inline-block px-6 py-2 rounded bg-[#fe8019] text-[#282828] font-semibold hover:opacity-90 transition-opacity"
+                  >
+                    Log in
+                  </Link>
+                </div>
+              )}
               <div className="text-center p-6 bg-[#1d2021] rounded-lg border-2 border-[#504945]">
                 <h3 className="text-xl font-semibold text-[#ebdbb2] mb-2">Accuracy</h3>
                 <p className="text-5xl font-bold text-[#8ec07c]">

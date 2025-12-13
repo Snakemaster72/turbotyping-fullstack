@@ -22,8 +22,8 @@ export const calculateWPM = (rawText, prompt) => {
   const totalTime = rawText[rawText.length - 1].time;
   const durationMinutes = totalTime / 60;
 
-  const rawWpm = Math.ceil(typedChar / 5 / durationMinutes);
-  const wpm = Math.ceil(correctChars / 5 / durationMinutes);
+  const rawWpm = Math.ceil((typedChar / 5 )/ durationMinutes);
+  const wpm = Math.ceil((correctChars / 5) / durationMinutes);
   const accuracy = Math.floor(
     typedChar === 0 ? 0 : (correctChars / typedChar) * 100,
   );

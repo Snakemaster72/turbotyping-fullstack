@@ -12,6 +12,8 @@ import CreateRoom from "./pages/play/Multiplayer/CreateRoom";
 import JoinRoom from "./pages/play/Multiplayer/JoinRoom";
 import WaitingRoom from "./pages/play/Multiplayer/WaitingRoom";
 import GameRoom from "./pages/play/Multiplayer/GameRoom";
+import ProfilePage from "./pages/ProfilePage";
+import LeaderboardPage from "./pages/LeaderboardPage";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -54,6 +56,8 @@ function App() {
             <Route path="/auth/login" element={<Login />} />
             <Route path="/auth/register" element={<Register />} />
             <Route path="/verify-email/:token" element={<VerifyEmailPage />} />
+            <Route path="/profile" element={<ProfilePage />} />
+            <Route path="/leaderboard" element={<LeaderboardPage />} />
             <Route path="/play/singleplayer" element={<SinglePlayer />} />
             <Route path="/play/multiplayer/">
               <Route index element={<RoomChoice />} />

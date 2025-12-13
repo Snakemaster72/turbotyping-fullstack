@@ -2,6 +2,8 @@ import { nanoid } from "nanoid";
 import { generatePrompt } from "../utils/promptGenMultiplayer.js";
 import { rooms } from "./store/roomStore.js";
 import { createRoomObject } from "./utils/createRoomObject.js";
+import { GameResult } from "../models/gameResultModel.js";
+import { User } from "../models/userModel.js";
 
 // The data parameter is not needed here
 export const handleRoomEvents = (socket, io) => {
@@ -106,4 +108,47 @@ export const handleRoomEvents = (socket, io) => {
   socket.on("player_joined_debug", (data) => {
     console.log("Debug: A player has joined", data);
   });
+
+  const handleGameEnd = async (data) => {
+    const room = rooms.get(data.roomId);
+    if (!room) return;
+
+    // Update room status
+    room.status = "completed";
+    
+    // Save results for authenticated players
+    try {
+      for (const player of room.players) {
+        // Skip guests
+        if (!player.userId) continue;
+
+        const user = await User.findById(player.userId);
+        if (!user) continue;
+
+        await GameResult.create({
+          user: player.userId,
+          wpm: player.wpm,
+          accuracy: player.accuracy,
+          prompt: room.prompt,
+          gameMode: 'multiplayer'
+        });
+      }
+    } catch (error) {
+      console.error('Error saving game results:', error);
+    }
+
+    // Emit game end event to all players
+    io.to(data.roomId).emit("game_ended", {
+      players: [...room.players],
+      status: room.status
+    });
+  };
+
+  // Socket event handlers
+  socket.on("create_room", createRoom);
+  socket.on("join_room", joinRoom);
+  socket.on("start_game", startGame);
+  socket.on("update_progress", updateProgress);
+  socket.on("game_end", handleGameEnd);
+  socket.on("leave_room", leaveRoom);
 };

@@ -3,24 +3,52 @@ import { calculateWPM } from "../utils/calculateWPM.js";
 import axios from "axios";
 import asyncHandler from "express-async-handler";
 import { word } from "../utils/wordData.js";
+import { GameResult } from "../models/gameResultModel.js";
 // POST /api/test
 // PUBLIC
 export const typingController = asyncHandler(async (req, res) => {
   const { testType, testData, prompt } = req.body;
   if (!testData || !prompt) {
+    console.error('Missing required data:', { testData: !!testData, prompt: !!prompt });
     res.status(400);
     throw new Error("Invalid request");
   }
+  
+  console.log('Calculating WPM with data:', { testDataLength: testData.length, promptLength: prompt.length });
   const { rawWpm, wpm, accuracy, totalTime, typedChar } = calculateWPM(
     testData,
     prompt,
   );
+  
+  console.log('Calculation results:', { rawWpm, wpm, accuracy, totalTime, typedChar });
 
   const user = req.user;
+  console.log('User context:', user ? { userId: user._id, username: user.username } : 'No user');
 
   if (user) {
+    // Update user stats
     await updateUserStats(user, testType, wpm, accuracy);
+    
+    // Save game result
+    try {
+      await GameResult.create({
+        user: user._id,
+        category: {
+          mode: 'classic',
+          duration: totalTime,
+          wordCount: prompt.split(' ').length
+        },
+        wpm,
+        accuracy,
+        duration: totalTime,
+        charactersTyped: typedChar,
+        rawText: prompt
+      });
+    } catch (error) {
+      console.error('Error saving game result:', error);
+    }
   }
+
   if (rawWpm && wpm && accuracy && totalTime && typedChar) {
     res.send({
       rawWpm,

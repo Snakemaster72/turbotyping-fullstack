@@ -31,7 +31,7 @@ const SinglePlayer = () => {
   useEffect(() => {
     const fetchResult = async () => {
       try {
-        const response = await axios.post("/api/typing", {
+      const response = await axios.post("/api/test", {
           testData: rawText,
           prompt: prompt,
         });
@@ -77,7 +77,7 @@ const SinglePlayer = () => {
         setLoadingPrompt(true);
         setError(null);
 
-        const res = await axios.get("/api/typing/prompt", {
+        const res = await axios.get("/api/test/prompt", {
           params:
             mode.type === "timer"
               ? { type: "classic", timer: duration }
