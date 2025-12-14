@@ -32,7 +32,7 @@ const LandingPage = () => {
       <div className="flex flex-col items-center justify-center mt-8">
         <div className="flex gap-8">
             <Link 
-              to="/play/singlePlayer" 
+              to="/play/singleplayer" 
               className="border-2 px-8 py-4 rounded-lg text-2xl font-bold shadow-lg transition-colors duration-200"
               style={{ 
                 borderColor: theme.border,
