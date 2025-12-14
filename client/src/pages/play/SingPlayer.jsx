@@ -32,6 +32,7 @@ const SinglePlayer = () => {
     const fetchResult = async () => {
       try {
       const response = await axios.post("/api/test", {
+          testType: mode.type + mode.val,
           testData: rawText,
           prompt: prompt,
         });

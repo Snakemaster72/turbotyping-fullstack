@@ -33,6 +33,7 @@ export const updateUserStats = asyncHandler(
       bestWPM: newBestWpm,
       bestAccuracy: newBestAccuracy,
     };
-    user.save();
+    userDoc.markModified('categoryStats');
+    await user.save();
   },
 );

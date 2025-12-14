@@ -13,6 +13,7 @@ export const typingController = asyncHandler(async (req, res) => {
     res.status(400);
     throw new Error("Invalid request");
   }
+  console.log(testType)
   
   console.log('Calculating WPM with data:', { testDataLength: testData.length, promptLength: prompt.length });
   const { rawWpm, wpm, accuracy, totalTime, typedChar } = calculateWPM(

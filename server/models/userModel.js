@@ -22,12 +22,12 @@ const userSchema = new mongoose.Schema(
     verificationTokenExpires: Date,
 
     categoryStats: {
+      count10: { type: categoryStatsSchema, default: () => ({}) },
+      count20: { type: categoryStatsSchema, default: () => ({}) },
       count50: { type: categoryStatsSchema, default: () => ({}) },
-      count100: { type: categoryStatsSchema, default: () => ({}) },
-      count200: { type: categoryStatsSchema, default: () => ({}) },
-      time15: { type: categoryStatsSchema, default: () => ({}) },
-      time30: { type: categoryStatsSchema, default: () => ({}) },
-      time60: { type: categoryStatsSchema, default: () => ({}) },
+      timer15: { type: categoryStatsSchema, default: () => ({}) },
+      timer30: { type: categoryStatsSchema, default: () => ({}) },
+      timer60: { type: categoryStatsSchema, default: () => ({}) },
       quote: { type: categoryStatsSchema, default: () => ({}) },
       snippets: { type: categoryStatsSchema, default: () => ({}) },
     },

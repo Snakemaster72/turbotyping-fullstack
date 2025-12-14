@@ -10,7 +10,7 @@ import testLogicRoutes from "./routes/testLogicRoutes.js";
 import { optionalAuth } from "./middleware/optionalAuthMiddleware.js";
 import logger from "./middleware/logger.js";
 import errorHandler from "./middleware/errorHandler.js";
-import setupSocketHandlers from "./socket/index.js";
+// import setupSocketHandlers from "./socket/index.js";
 import { protect } from "./middleware/authMiddleware.js";
 
 dotenv.config();
@@ -42,5 +42,5 @@ const io = new Server(httpServer, {
   },
 });
 
-setupSocketHandlers(io);
+// setupSocketHandlers(io);
 httpServer.listen(PORT, () => console.log("server is running on", PORT));

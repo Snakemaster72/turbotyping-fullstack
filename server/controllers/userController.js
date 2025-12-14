@@ -4,6 +4,7 @@ import asyncHandler from "express-async-handler";
 import crypto from 'crypto';
 import { User } from "../models/userModel.js";
 import sendEmail from '../utils/sendEmail.js';
+import validator from 'validator';
 
 //Register new user
 //route: POST /api/users
@@ -16,6 +17,26 @@ const generateVerificationToken = () => {
 
 export const registerUser = asyncHandler(async (req, res) => {
   const { username, email, password } = req.body;
+
+  // In registerUser
+if (!validator.isEmail(email)) {
+  res.status(400);
+  throw new Error("Invalid email format");
+}
+
+if (password.length < 8) {
+  res.status(400);
+  throw new Error("Password must be at least 8 characters");
+}
+
+if (username.length < 3 || username.length > 20) {
+  res.status(400);
+  throw new Error("Username must be 3-20 characters");
+}
+
+// Sanitize inputs
+email = validator.normalizeEmail(email);
+username = validator.escape(username);
 
   // Check for any incomplete credentials
   if (!email || !username || !password) {
@@ -31,11 +52,16 @@ export const registerUser = asyncHandler(async (req, res) => {
   if (existingUser) {
     res.status(400);
     throw new Error(
-      existingUser.username === username 
-        ? "Username already exists" 
-        : "Email already exists"
+      "Invalid credentials"
     );
   }
+
+  const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+
+if (!passwordRegex.test(password)) {
+  res.status(400);
+  throw new Error("Password must contain at least 8 characters, one uppercase, one lowercase, one number and one special character");
+}
 
   // Generate verification token
   const verificationToken = generateVerificationToken();

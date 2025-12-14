@@ -1,6 +1,8 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import tailwindcss from "@tailwindcss/vite";
+import dotenv from "dotenv";
+dotenv.config();
 
 // https://vite.dev/config/
 export default defineConfig({
@@ -8,7 +10,7 @@ export default defineConfig({
   server: {
     proxy: {
       "/api": {
-        target: "http://localhost:5000",
+        target: process.env.VITE_REACT_APP_API_URL,
         changeOrigin: true,
         rewrite: (path) => path,
       },

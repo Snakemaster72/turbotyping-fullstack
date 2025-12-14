@@ -8,7 +8,7 @@ export const optionalAuth = asyncHandler(async (req, res, next) => {
 
   console.log('Auth Header:', authHeader);
   
-  if (authHeader?.startsWith("Bearer")) {
+  if (authHeader?.startsWith("Bearer ")) {
     try {
       const token = authHeader.split(" ")[1];
       console.log('Token found:', token ? 'yes' : 'no');
