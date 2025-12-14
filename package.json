@@ -19,5 +19,8 @@
     "url": "https://github.com/Snakemaster72/turbotyping-fullstack/issues"
   },
   "homepage": "https://github.com/Snakemaster72/turbotyping-fullstack#readme",
-  "description": ""
+  "description": "",
+  "dependencies": {
+    "dotenv": "^17.2.3"
+  }
 }
