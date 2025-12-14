@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useTheme } from '../../context/ThemeContext';
 import axios from 'axios';
+import axiosInstance from '../../utils/axiosConfig';
 import { toast } from 'react-toastify';
 import { FiCheckCircle, FiXCircle } from 'react-icons/fi';
 
@@ -14,7 +15,7 @@ const VerifyEmailPage = () => {
   useEffect(() => {
     const verifyEmail = async () => {
       try {
-        const response = await axios.post(`/api/users/verify-email/${token}`);
+        const response = await axiosInstance.post(`/api/users/verify-email/${token}`);
         setVerificationStatus('success');
         toast.success(response.data.message);
         setTimeout(() => navigate('/auth/login'), 3000);

@@ -1,6 +1,11 @@
 import axios from 'axios';
 
-const axiosInstance = axios.create();
+// Use environment variable in production, empty string in development (uses proxy)
+const baseURL = import.meta.env.VITE_API_URL || '';
+
+const axiosInstance = axios.create({
+  baseURL: baseURL
+});
 
 // Request interceptor
 axiosInstance.interceptors.request.use(

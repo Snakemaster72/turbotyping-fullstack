@@ -6,6 +6,7 @@ import ResultPage from "./ResultPage";
 import { useState, useEffect, useRef } from "react";
 import { useTheme } from "../../context/ThemeContext";
 import { GrPowerReset } from "react-icons/gr";
+import axiosInstance from "../../utils/axiosConfig";
 const SinglePlayer = () => {
   const { theme } = useTheme();
   const [prompt, setPrompt] = useState("");
@@ -31,7 +32,7 @@ const SinglePlayer = () => {
   useEffect(() => {
     const fetchResult = async () => {
       try {
-      const response = await axios.post("/api/test", {
+      const response = await axiosInstance.post("/api/test", {
           testType: mode.type + mode.val,
           testData: rawText,
           prompt: prompt,
@@ -78,7 +79,7 @@ const SinglePlayer = () => {
         setLoadingPrompt(true);
         setError(null);
 
-        const res = await axios.get("/api/test/prompt", {
+        const res = await axiosInstance.get("/api/test/prompt", {
           params:
             mode.type === "timer"
               ? { type: "classic", timer: duration ,_nocache: Date.now() }
