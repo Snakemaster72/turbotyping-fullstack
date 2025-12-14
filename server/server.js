@@ -27,8 +27,8 @@ app.use('/api/test', testLogicRoutes);
 
 // Error Handling
 app.use(errorHandler);
-app.use(optionalAuth);
-app.use(protect);
+// app.use(optionalAuth);
+// app.use(protect);
 
 connectDB();
 

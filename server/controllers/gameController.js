@@ -24,3 +24,11 @@ export const getLeaderboard = asyncHandler(async (req, res) => {
   
   res.status(200).json(leaderboard);
 });
+
+
+
+// Note: Ensure that the GameResult model has appropriate indexes for performance,
+// especially if the dataset grows large. Indexes on 'user' and 'wpm' fields would be beneficial.   
+// Additionally, consider implementing pagination for the history endpoint if users have extensive game histories.
+
+// @desc    Po
