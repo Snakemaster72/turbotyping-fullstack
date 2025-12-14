@@ -79,12 +79,10 @@ const SinglePlayer = () => {
         setError(null);
 
         const res = await axios.get("/api/test/prompt", {
-          params:{
+          params:
             mode.type === "timer"
               ? { type: "classic", timer: duration ,_nocache: Date.now() }
               : { type: "classic", count: wordCount , _nocache: Date.now()},
-              
-          }
         });
 
         setPrompt(res.data.prompt);
