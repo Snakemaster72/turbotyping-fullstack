@@ -32,7 +32,6 @@ const GameRoom = () => {
     socket.emit("get_room_state", roomId);
 
     socket.on("room_state", (data) => {
-      console.log("Received room_state:", data); // Debug log
       if (data.roomId === roomId) {
         setPlayers(data.players);
         if (data.prompt) {

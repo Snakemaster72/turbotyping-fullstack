@@ -38,11 +38,8 @@ const TypingBox = ({
 
     // Detect the change (insert or delete)
     const diff = value.length - currentWord.length;
-    // console.log(diff);
-    //  console.log(value);
 
     if (!startTime) {
-      console.log("test started");
       setStartTime(now);
     }
 
@@ -79,8 +76,8 @@ const TypingBox = ({
     if (newChar === " ") {
       if (lastInputWord === promptLastWord) setCurrentWord("");
     }
-    console.log(typedText.length);
-    console.log(prompt.length);
+    // console.log(typedText.length);
+    // console.log(prompt.length);
 
     // console.log(currentWord);
     if (mode.type === "count") {

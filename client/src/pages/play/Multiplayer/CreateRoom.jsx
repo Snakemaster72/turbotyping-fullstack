@@ -19,7 +19,6 @@ const CreateRoom = () => {
         const usernameData = await getUsername();
         setUsername(usernameData.username);
       } catch (error) {
-        console.log(error);
         setUsername(null);
       } finally {
         setIsLoading(false);
@@ -28,7 +27,6 @@ const CreateRoom = () => {
     fetchUsername();
 
     socket.on("player_joined", (data) => {
-      console.log("Room created! Room info:", data);
       // if anybody has joined the room, we can redirect them to the room page
        navigate(`/play/multiplayer/room/${data.roomId}`);
     });
@@ -48,9 +46,6 @@ const CreateRoom = () => {
       count,
     };
     createRoom(roomData);
-    // delete later
-    console.log("Room created with data:", roomData);
-
   };
 
   const renderUserStatus = () => {

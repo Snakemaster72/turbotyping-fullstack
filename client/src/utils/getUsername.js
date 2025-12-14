@@ -15,7 +15,7 @@ export const getUsername = async () => {
 
     return response.data;
   } catch (error) {
-    console.error("Error fetching data:", error);
+    // console.error("Error fetching data:", error);
     // Handle error, e.g., redirect to login if unauthorized
   }
 };

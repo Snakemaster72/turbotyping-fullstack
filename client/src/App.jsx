@@ -32,7 +32,7 @@ function App() {
       dispatch(getUserData())
         .unwrap()
         .catch((error) => {
-          console.error("Failed to fetch user data:", error);
+          // console.error("Failed to fetch user data:", error);
         });
     } else if (user?.token) {
       // If we have a user with a token, ensure authenticated state is maintained
