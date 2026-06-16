@@ -5,19 +5,19 @@ import { socket, createRoom } from "../../../socket/socket";
 
 const CreateRoom = () => {
   const navigate = useNavigate();
-  const [username, setUsername] = useState({});
+  const [username, setUsername] = useState(null);
   const [maxPlayer, setMaxPlayer] = useState(2);
-  const [count, setCount] = useState(50);
+  const [count, setCount] = useState(30);
   const [isLoading, setIsLoading] = useState(true);
+  const [isPending, setIsPending] = useState(false);
 
   useEffect(() => {
-   
-    if(!socket.connected) socket.connect();
+    if (!socket.connected) socket.connect();
 
     const fetchUsername = async () => {
       try {
         const usernameData = await getUsername();
-        setUsername(usernameData.username);
+        setUsername(usernameData?.username ?? null);
       } catch (error) {
         setUsername(null);
       } finally {
@@ -26,51 +26,55 @@ const CreateRoom = () => {
     };
     fetchUsername();
 
-    socket.on("player_joined", (data) => {
-      // if anybody has joined the room, we can redirect them to the room page
-       navigate(`/play/multiplayer/room/${data.roomId}`);
-    });
-    // Cleanup listener on unmount
-    return () => {
-      socket.off("player_joined");
+    const onRoomCreated = (data) => {
+      navigate(`/play/multiplayer/room/${data.roomId}`);
     };
-  }, []);
+    const onConnectError = () => setIsPending(false);
+
+    socket.on("room_created", onRoomCreated);
+    socket.on("connect_error", onConnectError);
+
+    return () => {
+      socket.off("room_created", onRoomCreated);
+      socket.off("connect_error", onConnectError);
+    };
+  }, [navigate]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // logic to emit socket event will go here later
-
-    const roomData = {
-      username,
+    if (isPending) return;
+    setIsPending(true);
+    const guestName =
+      sessionStorage.getItem("mp_guest_name") ||
+      (() => {
+        const name = `Guest_${Math.random().toString(36).slice(2, 6)}`;
+        sessionStorage.setItem("mp_guest_name", name);
+        return name;
+      })();
+    createRoom({
+      username: username || guestName,
       maxPlayer,
       count,
-    };
-    createRoom(roomData);
+    });
   };
 
   const renderUserStatus = () => {
-    if (isLoading) {
-      return "Loading..."; // Or a spinner component
-    }
-
-    if (username) {
-      return `Join as ${username}`;
-    }
-
+    if (isLoading) return "Loading...";
+    if (username) return `Join as ${username}`;
     return "Join as a Guest";
   };
 
   return (
-    <div className="flex items-center justify-center h-screen">
+    <div className="flex items-center justify-center h-screen bg-[#1d2021] text-[#ebdbb2]">
       <form
         onSubmit={handleSubmit}
-        className="bg-white shadow-md rounded p-8 w-full max-w-md space-y-6"
+        className="bg-[#282828] border border-[#504945] shadow-md rounded-lg p-8 w-full max-w-md space-y-6"
       >
         <h2 className="text-2xl font-bold text-center">Create a New Room</h2>
 
         <div>
-          <label className="block text-sm font-medium mb-1">
-            {renderUserStatus()}{" "}
+          <label className="block text-sm font-medium mb-1 text-[#a89984]">
+            {renderUserStatus()}
           </label>
         </div>
 
@@ -79,7 +83,7 @@ const CreateRoom = () => {
           <select
             value={maxPlayer}
             onChange={(e) => setMaxPlayer(parseInt(e.target.value))}
-            className="w-full border border-gray-300 rounded px-3 py-2"
+            className="w-full bg-[#1d2021] border border-[#504945] rounded px-3 py-2 text-[#ebdbb2]"
           >
             {[2, 3, 4, 5].map((num) => (
               <option key={num} value={num}>
@@ -96,7 +100,7 @@ const CreateRoom = () => {
           <select
             value={count}
             onChange={(e) => setCount(parseInt(e.target.value))}
-            className="w-full border border-gray-300 rounded px-3 py-2"
+            className="w-full bg-[#1d2021] border border-[#504945] rounded px-3 py-2 text-[#ebdbb2]"
           >
             {[15, 30, 60].map((num) => (
               <option key={num} value={num}>
@@ -108,9 +112,10 @@ const CreateRoom = () => {
 
         <button
           type="submit"
-          className="w-full border hover:bg-gray-200 rounded py-2 transition"
+          disabled={isPending}
+          className="w-full bg-[#b8bb26] text-[#1d2021] font-bold rounded py-2 transition hover:bg-[#a9b126] disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          Create Room
+          {isPending ? "Creating..." : "Create Room"}
         </button>
       </form>
     </div>

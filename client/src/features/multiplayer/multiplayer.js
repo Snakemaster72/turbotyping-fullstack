@@ -7,6 +7,7 @@ const initialState = {
   maxPlayer: 0,
   status: "waiting",
   prompt: "",
+  myProgress: 0,
 };
 
 const multiplayerSlice = createSlice({
@@ -44,9 +45,21 @@ const multiplayerSlice = createSlice({
     setStatus: (state, action) => {
       state.status = action.payload;
     },
+    setMyProgress: (state, action) => {
+      state.myProgress = action.payload;
+    },
   },
 });
 
-export const { setRoomState, updatePlayers, setPlayers, setPrompt, setStatus } =
-  multiplayerSlice.actions;
+export const {
+  reset,
+  setRoomState,
+  setPlayers,
+  addPlayer,
+  removePlayer,
+  setHost,
+  setPrompt,
+  setStatus,
+  setMyProgress,
+} = multiplayerSlice.actions;
 export default multiplayerSlice.reducer;

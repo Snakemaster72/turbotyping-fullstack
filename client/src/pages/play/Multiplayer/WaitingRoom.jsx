@@ -1,5 +1,13 @@
+import { useNavigate, useParams } from "react-router-dom";
+import { useEffect } from "react";
+
 const WaitingRoom = () => {
-  return <div>Waiting Room</div>;
+  const { roomId } = useParams();
+  const navigate = useNavigate();
+  useEffect(() => {
+    navigate(`/play/multiplayer/room/${roomId}`, { replace: true });
+  }, []);
+  return null;
 };
 
 export default WaitingRoom;
