@@ -2,7 +2,7 @@
   "rewrites": [
     {
       "source": "/api/(.*)",
-      "destination": "https://https://turbotyping-backend.onrender.com/"
+      "destination": "https://turbotyping-backend.onrender.com/"
     },
     {
       "source": "/(.*)",

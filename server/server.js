@@ -35,9 +35,8 @@ connectDB();
 const PORT = process.env.PORT;
 const httpServer = createServer(app);
 const io = new Server(httpServer, {
-  /* options */
   cors: {
-    origin: "http://localhost:5173", // your frontend
+    origin: process.env.FRONTEND_URL || "http://localhost:5173",
     methods: ["GET", "POST"],
   },
 });
