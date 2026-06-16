@@ -34,9 +34,13 @@ connectDB();
 
 const PORT = process.env.PORT;
 const httpServer = createServer(app);
+const allowedOrigins = (process.env.FRONTEND_URL || "http://localhost:5173")
+  .split(",")
+  .map((s) => s.trim());
+
 const io = new Server(httpServer, {
   cors: {
-    origin: process.env.FRONTEND_URL || "http://localhost:5173",
+    origin: allowedOrigins,
     methods: ["GET", "POST"],
   },
 });
