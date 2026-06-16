@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import axios from 'axios';
+import axiosInstance from '../utils/axiosConfig.js';
 import { useTheme } from '../context/ThemeContext';
 
 const LeaderboardPage = () => {
@@ -11,7 +11,7 @@ const LeaderboardPage = () => {
   useEffect(() => {
     const fetchLeaderboard = async () => {
       try {
-        const response = await axios.get('/api/games/leaderboard');
+        const response = await axiosInstance.get('/api/games/leaderboard');
         setLeaderboard(response.data);
       } catch (err) {
         setError(err.response?.data?.message || 'Failed to fetch leaderboard');

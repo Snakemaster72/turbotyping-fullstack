@@ -2,8 +2,17 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
 import authService from "./authService.js";
 
-// Get user from localStorage
-const user = JSON.parse(localStorage.getItem("user"));
+// Safely parse localStorage — old sessions stored a raw JWT string (not JSON),
+// which would make JSON.parse throw and crash the entire Redux store on page refresh.
+let user = null;
+try {
+  const stored = localStorage.getItem("user");
+  const parsed = stored ? JSON.parse(stored) : null;
+  // Only treat it as a valid session if it looks like the user object (has a token field)
+  user = parsed?.token ? parsed : null;
+} catch {
+  localStorage.removeItem("user");
+}
 
 const initialState = {
   user: user ? user : null,

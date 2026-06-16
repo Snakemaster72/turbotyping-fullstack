@@ -1,15 +1,14 @@
 import axios from "axios";
+import axiosInstance from "../../utils/axiosConfig.js";
 
 const API_URL = "/api/users/";
 
-// Get user data
-// When the user has logged in before, we can fetch their data so they don't have to log in again
+// Uses axiosInstance so the request interceptor attaches the token automatically.
+// Previously used bare axios with localStorage.getItem("token") — but "token" is
+// never written by login/register (they write to "user"), so every call sent
+// "Authorization: Bearer null" → server threw JsonWebTokenError: jwt malformed.
 const getMe = async () => {
-  const response = await axios.get(API_URL + "me", {
-    headers: {
-      Authorization: `Bearer ${localStorage.getItem("token")}`,
-    },
-  });
+  const response = await axiosInstance.get(API_URL + "me");
   return response.data;
 };
 
@@ -18,7 +17,10 @@ const register = async (userData) => {
   const response = await axios.post(API_URL, userData);
 
   if (response.data) {
-    localStorage.setItem("user", response.data.token);
+    // Store the full user object as JSON so axiosInstance's request interceptor
+    // can read .token from it. The old code stored only the raw JWT string,
+    // which made JSON.parse throw and silently broke all axiosInstance requests.
+    localStorage.setItem("user", JSON.stringify(response.data));
   }
 
   return response.data;
@@ -28,14 +30,16 @@ const login = async (userData) => {
   const response = await axios.post(API_URL + "login", userData);
 
   if (response.data) {
-    localStorage.setItem("user", response.data.token);
+    // Same fix as register — store the full object, not just the token string.
+    localStorage.setItem("user", JSON.stringify(response.data));
   }
   return response.data;
 };
 
-//logout
 const logout = () => {
-  localStorage.removeItem("token");
+  // Login writes to "user"; the old code removed "token" (never set), so
+  // the session persisted in localStorage after logout. Remove the right key.
+  localStorage.removeItem("user");
 };
 
 // Set token for authenticated requests

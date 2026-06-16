@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
-import axios from 'axios';
+// Use axiosInstance (not bare axios) so the global response interceptor can catch
+// 401 TOKEN_EXPIRED responses and redirect to login automatically.
+import axiosInstance from '../utils/axiosConfig.js';
 import { useTheme } from '../context/ThemeContext';
 
 const ProfilePage = () => {
@@ -13,9 +15,10 @@ const ProfilePage = () => {
   useEffect(() => {
     const fetchHistory = async () => {
       try {
-        const response = await axios.get('/api/games/my-history', {
-          headers: { Authorization: `Bearer ${user.token}` }
-        });
+        // Token is now attached automatically by the axiosInstance request interceptor;
+        // the manual Authorization header was reading from Redux state, which became
+        // stale/expired after 30 days with no way to recover.
+        const response = await axiosInstance.get('/api/games/my-history');
         setHistory(response.data);
       } catch (err) {
         setError(err.response?.data?.message || 'Failed to fetch history');
