@@ -27,16 +27,12 @@ const Register = () => {
     (state) => state.auth,
   );
 
+  // Redirect already-logged-in users away from the register page
   useEffect(() => {
-    if (isError) {
-      toast.error(message || "Something went wrong");
-      dispatch(reset());
-    }
-    if (isSuccess || user) {
+    if (user && !isLoading) {
       navigate("/");
-      dispatch(reset());
     }
-  }, [user, isError, isSuccess, message, navigate, dispatch]);
+  }, [user, isLoading, navigate]);
 
   const onChange = (e) => {
     setFormData((prevState) => ({
@@ -59,15 +55,12 @@ const Register = () => {
       
       try {
         const result = await dispatch(register(userData)).unwrap();
-        toast.success(result.message);
-        setFormData({
-          username: '',
-          email: '',
-          password: '',
-          password2: ''
-        });
+        dispatch(reset());
+        toast.success(result.message || "Registration successful. Please verify your email.");
+        navigate("/auth/login");
       } catch (error) {
-        toast.error(error || 'Registration failed');
+        dispatch(reset());
+        toast.error(error || "Registration failed");
       }
     }
   };

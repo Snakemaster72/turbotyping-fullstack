@@ -16,52 +16,43 @@ const generateVerificationToken = () => {
 };
 
 export const registerUser = asyncHandler(async (req, res) => {
-  const { username, email, password } = req.body;
+  let { username, email, password } = req.body;
 
-  // In registerUser
-if (!validator.isEmail(email)) {
-  res.status(400);
-  throw new Error("Invalid email format");
-}
-
-if (password.length < 8) {
-  res.status(400);
-  throw new Error("Password must be at least 8 characters");
-}
-
-if (username.length < 3 || username.length > 20) {
-  res.status(400);
-  throw new Error("Username must be 3-20 characters");
-}
-
-// Sanitize inputs
-email = validator.normalizeEmail(email);
-username = validator.escape(username);
-
-  // Check for any incomplete credentials
   if (!email || !username || !password) {
     res.status(400);
     throw new Error("Please add all fields");
   }
 
-  // Check if username or email already exists
-  const existingUser = await User.findOne({
-    $or: [{ username }, { email }]
-  });
-
-  if (existingUser) {
+  if (!validator.isEmail(email)) {
     res.status(400);
-    throw new Error(
-      "Invalid credentials"
-    );
+    throw new Error("Invalid email format");
+  }
+
+  if (username.length < 3 || username.length > 20) {
+    res.status(400);
+    throw new Error("Username must be 3-20 characters");
   }
 
   const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+  if (!passwordRegex.test(password)) {
+    res.status(400);
+    throw new Error("Password must be at least 8 characters and include an uppercase letter, a lowercase letter, a number, and a special character (@ $ ! % * ? &)");
+  }
 
-if (!passwordRegex.test(password)) {
-  res.status(400);
-  throw new Error("Password must contain at least 8 characters, one uppercase, one lowercase, one number and one special character");
-}
+  email = validator.normalizeEmail(email);
+  username = validator.escape(username);
+
+  const existingEmail = await User.findOne({ email });
+  if (existingEmail) {
+    res.status(400);
+    throw new Error("An account with this email already exists");
+  }
+
+  const existingUsername = await User.findOne({ username });
+  if (existingUsername) {
+    res.status(400);
+    throw new Error("This username is already taken");
+  }
 
   // Generate verification token
   const verificationToken = generateVerificationToken();
@@ -121,9 +112,8 @@ if (!passwordRegex.test(password)) {
 export const loginUser = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
 
-  //check for any incomplete credentials
   if (!email || !password) {
-    req.status(400);
+    res.status(400);
     throw new Error("Please add all fields");
   }
 

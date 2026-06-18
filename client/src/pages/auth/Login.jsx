@@ -25,16 +25,10 @@ const Login = () => {
   );
 
   useEffect(() => {
-    if (isError) {
-      toast.error(message);
-    }
-    if (isSuccess || user) {
+    if (user) {
       navigate("/");
     }
-    return () => {
-      dispatch(reset());
-    };
-  }, [user, isError, isSuccess, message, navigate, dispatch]);
+  }, [user, navigate]);
 
   const onChange = (e) => {
     setFormData((prevState) => ({
@@ -43,13 +37,14 @@ const Login = () => {
     }));
   };
 
-  const onSubmit = (e) => {
+  const onSubmit = async (e) => {
     e.preventDefault();
-    const userData = {
-      email,
-      password,
-    };
-    dispatch(login(userData));
+    try {
+      await dispatch(login({ email, password })).unwrap();
+    } catch (error) {
+      dispatch(reset());
+      toast.error(error || "Login failed");
+    }
   };
 
   return (
