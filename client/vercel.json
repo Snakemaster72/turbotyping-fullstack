@@ -1,8 +1,8 @@
 {
   "rewrites": [
     {
-      "source": "/api/(.*)",
-      "destination": "https://turbotyping-backend.onrender.com/"
+      "source": "/api/:path*",
+      "destination": "https://turbotyping-backend.onrender.com/api/:path*"
     },
     {
       "source": "/(.*)",
