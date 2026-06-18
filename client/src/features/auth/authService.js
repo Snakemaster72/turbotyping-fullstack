@@ -14,12 +14,9 @@ const getMe = async () => {
 
 // Register user
 const register = async (userData) => {
-  const response = await axios.post(API_URL, userData);
+  const response = await axiosInstance.post(API_URL, userData);
 
   if (response.data) {
-    // Store the full user object as JSON so axiosInstance's request interceptor
-    // can read .token from it. The old code stored only the raw JWT string,
-    // which made JSON.parse throw and silently broke all axiosInstance requests.
     localStorage.setItem("user", JSON.stringify(response.data));
   }
 
@@ -27,10 +24,9 @@ const register = async (userData) => {
 };
 
 const login = async (userData) => {
-  const response = await axios.post(API_URL + "login", userData);
+  const response = await axiosInstance.post(API_URL + "login", userData);
 
   if (response.data) {
-    // Same fix as register — store the full object, not just the token string.
     localStorage.setItem("user", JSON.stringify(response.data));
   }
   return response.data;
