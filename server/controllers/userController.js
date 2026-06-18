@@ -44,8 +44,30 @@ export const registerUser = asyncHandler(async (req, res) => {
 
   const existingEmail = await User.findOne({ email });
   if (existingEmail) {
-    res.status(400);
-    throw new Error("An account with this email already exists");
+    if (existingEmail.isVerified) {
+      res.status(400);
+      throw new Error("An account with this email already exists");
+    }
+    // Unverified account — refresh the token and resend the email
+    const verificationToken = generateVerificationToken();
+    existingEmail.verificationToken = verificationToken;
+    existingEmail.verificationTokenExpires = new Date(Date.now() + 3600000);
+    await existingEmail.save();
+    try {
+      await sendEmail({
+        to: existingEmail.email,
+        subject: 'Verify your TurboTyping account',
+        type: 'verification',
+        token: verificationToken
+      });
+    } catch (error) {
+      console.error('Error resending verification email:', error);
+      res.status(500);
+      throw new Error('Failed to send verification email. Please check your spam folder or try again later.');
+    }
+    return res.status(200).json({
+      message: "Verification email resent. Please check your inbox.",
+    });
   }
 
   const existingUsername = await User.findOne({ username });
@@ -54,15 +76,12 @@ export const registerUser = asyncHandler(async (req, res) => {
     throw new Error("This username is already taken");
   }
 
-  // Generate verification token
   const verificationToken = generateVerificationToken();
-  const verificationTokenExpires = new Date(Date.now() + 3600000); // 1 hour
+  const verificationTokenExpires = new Date(Date.now() + 3600000);
 
-  // Hash password
   const salt = await bcrypt.genSalt(10);
   const hashedPassword = await bcrypt.hash(password, salt);
 
-  // Create user
   const user = await User.create({
     username,
     email,
@@ -72,37 +91,27 @@ export const registerUser = asyncHandler(async (req, res) => {
     isVerified: false
   });
 
-  if (user) {
-    // Generate verification URL
-    const verificationUrl = `${process.env.FRONTEND_URL}/verify-email/${verificationToken}`;
-    
-    // Send verification email
-    try {
-      await sendEmail({
-        to: user.email,
-        subject: 'Verify your TurboTyping account',
-        type: 'verification',
-        token: verificationToken
-      });
-    } catch (error) {
-      console.error('Error sending verification email:', error);
-      // Delete the created user if email sending fails
-      await User.findByIdAndDelete(user._id);
-      res.status(500);
-      throw new Error('Error sending verification email. Please try again.');
-    }
-    
-    res.status(201).json({
-      _id: user.id,
-      username: user.username,
-      email: user.email,
-      message: "Registration successful. Please check your email to verify your account.",
-      token: generateToken(user._id)
+  try {
+    await sendEmail({
+      to: user.email,
+      subject: 'Verify your TurboTyping account',
+      type: 'verification',
+      token: verificationToken
     });
-  } else {
-    res.status(400);
-    throw new Error("Invalid user data");
+  } catch (error) {
+    console.error('Error sending verification email:', error);
+    // Keep the user record so they can trigger a resend by re-submitting the form
+    res.status(500);
+    throw new Error('Account created but verification email failed to send. Try signing up again with the same email to resend it.');
   }
+
+  res.status(201).json({
+    _id: user.id,
+    username: user.username,
+    email: user.email,
+    message: "Registration successful. Please check your email to verify your account.",
+    token: generateToken(user._id)
+  });
 });
 
 //login user
