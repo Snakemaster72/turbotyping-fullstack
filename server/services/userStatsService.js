@@ -1,39 +1,24 @@
-import asyncHandler from "express-async-handler";
 import { User } from "../models/userModel.js";
 
-export const updateUserStats = asyncHandler(
-  async (userId, testType, wpm, accuracy) => {
-    //get user moder/data
-    //get typing test data
-    //update user stats
+export const updateUserStats = async (user, testType, wpm, accuracy) => {
+  const stats = user.categoryStats[testType] || {
+    wpmAvg: 0,
+    accuracyAvg: 0,
+    totalTests: 0,
+    bestWPM: 0,
+    bestAccuracy: 0,
+  };
 
-    const user = await User.findById(userId);
-    if (!user) {
-      res.status(400);
-      throw new Error("User not found");
-    }
-    const stats = user.categoryStats[testType] || {
-      wpmAvg: 0,
-      accuracyAvg: 0,
-      totalTests: 0,
-      bestWPM: 0,
-      bestAccuracy: 0,
-    };
-    const { wpmAvg, accuracyAvg, totalTests, bestWPM, bestAccuracy } = stats;
-    const newTotal = totalTests + 1;
-    const newWpmAvg = (wpmAvg * totalTests + wpm) / newTotal;
-    const newAccuracyAvg = (accuracyAvg * totalTests + accuracy) / newTotal;
-    const newBestWpm = Math.max(bestWPM || 0, wpm);
-    const newBestAccuracy = Math.max(bestAccuracy || 0, accuracy);
+  const newTotal = stats.totalTests + 1;
 
-    user.categoryStats[testType] = {
-      wpmAvg: newWpmAvg,
-      accuracyAvg: newAccuracyAvg,
-      totalTests: newTotal,
-      bestWPM: newBestWpm,
-      bestAccuracy: newBestAccuracy,
-    };
-    userDoc.markModified('categoryStats');
-    await user.save();
-  },
-);
+  user.categoryStats[testType] = {
+    wpmAvg: (stats.wpmAvg * stats.totalTests + wpm) / newTotal,
+    accuracyAvg: (stats.accuracyAvg * stats.totalTests + accuracy) / newTotal,
+    totalTests: newTotal,
+    bestWPM: Math.max(stats.bestWPM || 0, wpm),
+    bestAccuracy: Math.max(stats.bestAccuracy || 0, accuracy),
+  };
+
+  user.markModified('categoryStats');
+  await user.save();
+};

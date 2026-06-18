@@ -66,7 +66,7 @@ const LeaderboardPage = () => {
                   {index + 1}
                 </div>
                 <div className="flex-1">
-                  <div className="font-bold text-lg">{entry.user.username}</div>
+                  <div className="font-bold text-lg">{entry.user?.username ?? 'Deleted User'}</div>
                   <div style={{ color: theme.textSoft }}>
                     <span className="text-lg" style={{ color: theme.primary }}>
                       {entry.wpm} WPM

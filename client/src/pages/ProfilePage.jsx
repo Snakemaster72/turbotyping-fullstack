@@ -69,7 +69,7 @@ const ProfilePage = () => {
                   <span className="mx-2">|</span>
                   <span>{game.accuracy}% accuracy</span>
                   <span className="mx-2">|</span>
-                  <span style={{ color: theme.textSoft }}>{game.gameMode}</span>
+                  <span style={{ color: theme.textSoft }}>{game.category?.mode}</span>
                 </div>
                 <div className="text-sm" style={{ color: theme.textSoft }}>
                   {new Date(game.createdAt).toLocaleDateString()}
