@@ -4,7 +4,8 @@ import axios from 'axios';
 const baseURL = import.meta.env.VITE_API_URL || '';
 
 const axiosInstance = axios.create({
-  baseURL: baseURL
+  baseURL: baseURL,
+  timeout: 30000,
 });
 
 // Request interceptor — attach JWT from localStorage to every request
